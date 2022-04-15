@@ -13,12 +13,14 @@
         </el-icon>
       </div>
     </template>
+    <Config />
   </el-drawer>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { CircleClose } from '@element-plus/icons-vue';
+import Config from './Config.vue';
 import { useMainStore } from '../store/main';
 
 const mainStore = useMainStore();

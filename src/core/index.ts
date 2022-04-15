@@ -1,7 +1,6 @@
 import Octokit, { getOctokitInstance } from './octokit';
-import { defConfig } from './constants';
-import createFile from './api/create-file';
-import getFile from './api/get-file';
+import createFile, { CreateConfig } from './api/create-file';
+import getFile, { getReposConfig } from './api/get-file';
 
 // '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'
 // ('moyuderen/octokit-cdn/contents/test1/test.jpg');
@@ -15,19 +14,22 @@ export default class Cdn {
   private config: CdnConfig;
 
   constructor(config: CdnConfig) {
-    this.config = Object.assign(defConfig, {}, config);
-    this.octokit = getOctokitInstance(this.config.token);
+    this.config = config;
+    // init
+    this.octokit = getOctokitInstance({
+      auth: this.config.token,
+    });
   }
 
   public getConfig() {
     return this.config;
   }
 
-  public getFile() {
-    const response = getFile(this.octokit);
+  public getFile(config: getReposConfig) {
+    return getFile(this.octokit, config);
   }
 
-  public async createFile(content: string) {
-    return await createFile(this.octokit, this.config, content);
+  public async createFile(config: CreateConfig, content: string) {
+    return createFile(this.octokit, config, content);
   }
 }

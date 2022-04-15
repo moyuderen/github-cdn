@@ -1,6 +1,12 @@
 <template>
   <div class="home">
-    <el-upload drag action="#" multiple :before-upload="beforeUpload">
+    <el-upload
+      drag
+      action="#"
+      multiple
+      :before-upload="beforeUpload"
+      :show-file-list="false"
+    >
       <el-icon class="el-icon--upload"><upload-filled /></el-icon>
       <div class="el-upload__text">
         Drop file here or
@@ -12,39 +18,31 @@
         </div>
       </template>
     </el-upload>
+
+    {{ reposList }}
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { UploadFilled } from '@element-plus/icons-vue';
-import { ElNotification } from 'element-plus';
-import { ElMessage } from 'element-plus';
-
-import { parseFile } from '../utils/file';
+import { storeToRefs } from 'pinia';
+import useConfigStore from '../store/config';
 import Cdn from '../core/index';
+import { useGetRepos } from './useGetRepos';
+import { useCreateRepo } from './createRepo';
+
+const { config } = storeToRefs(useConfigStore());
 
 const cdn = new Cdn({
-  token: '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',
+  token: config.value.token,
 });
 
+const { reposList } = useGetRepos(cdn, config.value);
+
 const beforeUpload = async (rawFile) => {
-  const record = await parseFile(rawFile);
-  console.log(await cdn.createFile(record.peerBase64));
-  //   const { documentation_url, message, commit, content } = await cdn.createFile(
-  //     record.peerBase64,
-  //   );
-  //   if (documentation_url) {
-  //     ElNotification({
-  //       title: 'Error',
-  //       message,
-  //       type: 'error',
-  //     });
-  //     return;
-  //   }
-  //   ElMessage({
-  //     message: '上传成功 !',
-  //     type: 'success',
-  //   });
+  useCreateRepo(cdn, config.value, rawFile);
+  return;
 };
 </script>
 
