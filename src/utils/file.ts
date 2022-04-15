@@ -22,3 +22,7 @@ export function readFileContentBase64(file: File) {
     reader.readAsDataURL(file);
   });
 }
+
+const IMAGE_REGEXP = /\.(jpeg|jpg|gif|png|svg|webp|jfif|bmp|dpg)/i;
+
+export const isImageUrl = (url: string): boolean => IMAGE_REGEXP.test(url);

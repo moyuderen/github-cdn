@@ -19,18 +19,22 @@
       </template>
     </el-upload>
 
-    {{ reposList }}
+    <Directory
+      :list="reposList"
+      @openDir="openDir"
+      v-loading="loading"
+    ></Directory>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { UploadFilled } from '@element-plus/icons-vue';
 import { storeToRefs } from 'pinia';
 import useConfigStore from '../store/config';
 import Cdn from '../core/index';
 import { useGetRepos } from './useGetRepos';
 import { useCreateRepo } from './createRepo';
+import Directory from '../components/Directory.vue';
 
 const { config } = storeToRefs(useConfigStore());
 
@@ -38,11 +42,15 @@ const cdn = new Cdn({
   token: config.value.token,
 });
 
-const { reposList } = useGetRepos(cdn, config.value);
+const { loading, reposList, getRepos } = useGetRepos(cdn, config.value);
 
 const beforeUpload = async (rawFile) => {
   useCreateRepo(cdn, config.value, rawFile);
   return;
+};
+
+const openDir = (dirname) => {
+  getRepos(dirname);
 };
 </script>
 
@@ -51,7 +59,6 @@ const beforeUpload = async (rawFile) => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   padding-top: 40px;
 }
 </style>
