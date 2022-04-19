@@ -1,32 +1,33 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
   {
     path: '/',
-    component: () => import(/* webpackChunkName: "home" */ '../pages/home.vue'),
+    component: () =>
+      import(/* webpackChunkName: "home" */ '../pages/home/index.vue'),
     meta: {
       title: 'Home',
     },
   },
-];
+]
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
-});
+})
 
 // 全局路由守卫
 router.beforeEach((to, from, next) => {
   // console.log(to, from)
   if (to.meta.title) {
-    document.title = `${to.meta.title} | octokit`;
+    document.title = `${to.meta.title} | octokit`
   }
-  next();
-});
+  next()
+})
 
 router.afterEach((to, from) => {
   // console.log(to, from)
-  console.log('afterEach');
-});
+  // console.log('afterEach');
+})
 
-export default router;
+export default router

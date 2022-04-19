@@ -22,36 +22,50 @@
     <Directory
       :list="reposList"
       @openDir="openDir"
+      :cdn="cdn"
+      :config="config"
       v-loading="loading"
+      @getList="getList"
+      element-loading-text="获取目录中..."
     ></Directory>
   </div>
 </template>
 
 <script setup lang="ts">
-import { UploadFilled } from '@element-plus/icons-vue';
-import { storeToRefs } from 'pinia';
-import useConfigStore from '../store/config';
-import Cdn from '../core/index';
-import { useGetRepos } from './useGetRepos';
-import { useCreateRepo } from './createRepo';
-import Directory from '../components/Directory.vue';
+import { UploadFilled } from '@element-plus/icons-vue'
+import { storeToRefs } from 'pinia'
+import useConfigStore from '../../store/config'
+import { Cdn } from '../../core/index'
+import { useGetRepos } from './useGetRepos'
+import { useCreateRepo } from './useCreateRepo'
+import Directory from './components/Directory.vue'
 
-const { config } = storeToRefs(useConfigStore());
+const { config } = storeToRefs(useConfigStore())
 
 const cdn = new Cdn({
   token: config.value.token,
-});
+})
 
-const { loading, reposList, getRepos } = useGetRepos(cdn, config.value);
+const { loading, reposList, getRepos } = useGetRepos(cdn, config.value)
 
 const beforeUpload = async (rawFile) => {
-  useCreateRepo(cdn, config.value, rawFile);
-  return;
-};
+  try {
+    await useCreateRepo(cdn, config.value, rawFile)
+    getList('')
+  } catch {
+    //
+  }
+
+  return
+}
 
 const openDir = (dirname) => {
-  getRepos(dirname);
-};
+  getList(dirname)
+}
+
+const getList = (dirname) => {
+  getRepos(dirname)
+}
 </script>
 
 <style lang="scss" scoped>
