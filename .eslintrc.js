@@ -1,9 +1,9 @@
 module.exports = {
   // 此项是用来告诉eslint找当前配置文件不能往父级查找
-  root: true, 
+  root: true,
   // 全局环境
   env: {
-      node: true,
+    node: true,
   },
   // 指定如何解析语法。可以为空，但若不为空，只能配该值
   parser: 'vue-eslint-parser',
@@ -46,7 +46,7 @@ module.exports = {
     'curly': ['error', 'all'], // 必须使用 if(){} 中的{}
     'default-case': 'error', // switch语句最后必须有default
     'dot-location': 'off', // 对象访问符的位置，换行的时候在行首还是行尾
-    'dot-notation': ['off', { 'allowKeywords': true }], // 避免不必要的方括号
+    'dot-notation': ['off', { allowKeywords: true }], // 避免不必要的方括号
     'eol-last': 'off', // 文件以单一的换行符结束
     'eqeqeq': 'error', // 要求使用 === 和 !==
     'func-names': 'off', // 函数表达式必须有名字
@@ -57,7 +57,7 @@ module.exports = {
     'id-length': 'off', // 变量名长度
     'indent': ['error', 4], // 缩进风格
     'init-declarations': 'off', // 声明时必须赋初始值
-    'key-spacing': ['off', { 'beforeColon': false, 'afterColon': true }], // 对象字面量中冒号的前后空格
+    'key-spacing': ['off', { beforeColon: false, afterColon: true }], // 对象字面量中冒号的前后空格
     'lines-around-comment': 'off', // 行前/行后备注
     'max-depth': ['off', 4], // 嵌套块深度
     'max-len': ['off', 80, 4], // 字符串最大长度
@@ -118,7 +118,7 @@ module.exports = {
     'linebreak-style': ['off', 'windows'], // 换行风格
     'no-multi-spaces': 'warn', // 不能用多余的空格
     'no-multi-str': 'error', // 字符串不能用\换行
-    'no-multiple-empty-lines': ['warn', {'max': 'error'}], // 空行最多不能超过'error'行
+    'no-multiple-empty-lines': ['warn', { max: 'error' }], // 空行最多不能超过'error'行
     'no-native-reassign': 'error', // 不能重写native对象
     'no-negated-in-lhs': 'error', // in 操作符的左边不能有!
     'no-nested-ternary': 'off', // 禁止使用嵌套的三目运算
@@ -160,12 +160,15 @@ module.exports = {
     'no-unneeded-ternary': 'error', // 禁止不必要的嵌套 var isYes = answer === 'warn' ? true : false;
     'no-unreachable': 'error', // 不能有无法执行的代码
     'no-unused-expressions': 'error', // 禁止无用的表达式
-    'no-unused-vars': ['error', {'vars': 'all', 'args': 'after-used'}], // 不能有声明后未被使用的变量或参数
+    'no-unused-vars': ['error', { vars: 'all', args: 'after-used' }], // 不能有声明后未被使用的变量或参数
     'no-use-before-define': 'error', // 未定义前不能使用
     'no-useless-call': 'error', // 禁止不必要的call和apply
     'no-void': 'error', // 禁用void操作符
     'no-var': 'off', // 禁用var，用let和const代替
-    'no-warning-comments': ['warn', { 'terms': ['todo', 'fixme', 'xxx'], 'location': 'start' }], // 不能有警告备注
+    'no-warning-comments': [
+      'warn',
+      { terms: ['todo', 'fixme', 'xxx'], location: 'start' },
+    ], // 不能有警告备注
     'no-with': 'error', // 禁用with
     'object-curly-spacing': ['off', 'never'], // 大括号内是否允许不必要的空格
     'object-shorthand': 'off', // 强制对象字面量缩写语法
@@ -177,12 +180,12 @@ module.exports = {
     'prefer-spread': 'off', // 首选展开运算
     'prefer-reflect': 'off', // 首选Reflect的方法
     'quotes': ['warn', 'single'], // 引号类型 `` '' ''
-    'quote-props':['error', 'always'], // 对象字面量中的属性名是否强制双引号
+    'quote-props': ['error', 'always'], // 对象字面量中的属性名是否强制双引号
     'radix': 'error', // parseInt必须指定第二个参数
     'id-match': 'off', // 命名检测
     'require-yield': 'off', // 生成器函数必须有yield
     'semi': ['error', 'always'], // 语句强制分号结尾
-    'semi-spacing': ['off', {'before': false, 'after': true}], // 分号前后空格
+    'semi-spacing': ['off', { before: false, after: true }], // 分号前后空格
     'sort-vars': 'off', // 变量声明时排序
     'space-after-keywords': ['off', 'always'], // 关键字后面是否要空一格
     'space-before-blocks': ['off', 'always'], // 不以新行开始的块{前面要不要有空格
@@ -190,7 +193,7 @@ module.exports = {
     'space-in-parens': ['off', 'never'], // 小括号里面要不要有空格
     'space-infix-ops': 'off', // 中缀操作符周围要不要有空格
     'space-return-throw-case': 'error', // return throw case后面要不要加空格
-    'space-unary-ops': ['off', { 'words': true, 'nonwords': false }], // 一元运算符的前/后要不要加空格
+    'space-unary-ops': ['off', { words: true, nonwords: false }], // 一元运算符的前/后要不要加空格
     'spaced-comment': 'off', // 注释风格要不要有空格什么的
     'strict': 'error', // 使用严格模式
     'use-isnan': 'error', // 禁止比较时使用NaN，只能用isNaN()
@@ -200,6 +203,6 @@ module.exports = {
     'vue/require-v-for-key': 'off', // vue的for循环是否必须有key
     'wrap-iife': ['error', 'inside'], // 立即执行函数表达式的小括号风格
     'wrap-regex': 'off', // 正则表达式字面量用小括号包起来
-    'yoda': ['error', 'never'] // 禁止尤达条件
+    'yoda': ['error', 'never'], // 禁止尤达条件
   },
-};
+}

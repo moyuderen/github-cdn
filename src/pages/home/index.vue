@@ -18,7 +18,7 @@
         </div>
       </template>
     </el-upload>
-
+    <Config />
     <Directory
       :list="reposList"
       @openDir="openDir"
@@ -39,6 +39,7 @@ import { Cdn } from '../../core/index'
 import { useGetRepos } from './useGetRepos'
 import { useCreateRepo } from './useCreateRepo'
 import Directory from './components/Directory.vue'
+import Config from './components/Config.vue'
 
 const { config } = storeToRefs(useConfigStore())
 

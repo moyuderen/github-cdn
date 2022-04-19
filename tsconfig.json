@@ -4,17 +4,19 @@
     "useDefineForClassFields": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "strict": true,
+    "strict": false,
     "jsx": "preserve",
     "sourceMap": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
+    "noImplicitAny": false, // When you set noImplicitAny to true, every time TypeScript can't find or infer type annotations for a value, it will issue an error
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "allowSyntheticDefaultImports": false
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]

@@ -1,7 +1,7 @@
 <template>
   <div class="directory">
     <div class="breadcrumb">
-      <el-breadcrumb separator="/">
+      <el-breadcrumb :separator-icon="ArrowRight">
         <el-breadcrumb-item
           v-for="(breadcrumb, index) in directoryBreadcrumb"
           @click="jumpDir(breadcrumb, index)"
@@ -15,7 +15,7 @@
       <div v-for="item in directoryList" :key="item.name" class="file">
         <el-dropdown
           trigger="contextmenu"
-          placement="bottom-start"
+          placement="top-start"
           @command="handleCommand"
           :hide-on-click="false"
         >
@@ -27,7 +27,6 @@
               <div v-if="isImageUrl(item.name)">
                 <el-image
                   lazy
-                  p
                   style="width: 44px; height: 44px; border-radius: 4px"
                   :src="item.download_url"
                   fit="fill"
@@ -63,7 +62,7 @@
           class="box-item"
           effect="dark"
           :content="item.name"
-          placement="top"
+          placement="bottom"
         >
           <div class="file-name">
             {{ item.name }}
@@ -78,7 +77,13 @@
 import { ref, unref, computed, PropType } from 'vue'
 import type { Ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Folder, Document, Picture, Delete } from '@element-plus/icons-vue'
+import {
+  Folder,
+  Document,
+  Picture,
+  Delete,
+  ArrowRight,
+} from '@element-plus/icons-vue'
 import { isImageUrl } from '../../../utils/file'
 import useConfigStore from '../../../store/config'
 import { storeToRefs } from 'pinia'
