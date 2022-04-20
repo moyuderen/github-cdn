@@ -12,9 +12,6 @@
     <el-form-item label="Branch">
       <el-input v-model="form.branch" placeholder="默认为main分支" />
     </el-form-item>
-    <el-form-item label="Commit message">
-      <el-input v-model="form.message" />
-    </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)">
         Confirm
@@ -30,19 +27,14 @@ import { useConfigStore } from '../store/config'
 import { useMainStore } from '../store/main'
 import { storage, Config_Key } from '../utils/storage'
 import type { FormInstance } from 'element-plus'
+import { cdnSdk } from '@/main'
 
 const configStore = useConfigStore()
 const mainStore = useMainStore()
 
 const ruleFormRef = ref<FormInstance>()
-let form = reactive({
-  token: '',
-  owner: '',
-  repo: '',
-  branch: '',
-  path: '',
-  message: '',
-})
+const form = configStore.config
+console.log(form)
 
 const rules = reactive({
   token: [{ required: true, trigger: 'blur' }],
@@ -56,6 +48,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (valid) {
       storage.set(Config_Key, form)
       configStore.setConfig(form)
+      cdnSdk.updateConfig(form)
       mainStore.toggleDrawer()
     }
   })

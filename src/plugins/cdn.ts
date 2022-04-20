@@ -1,15 +1,12 @@
-import { Cdn } from '@/core/index'
-import { useConfigStore } from '@/store/config'
+import { createSdk } from '@/cdn-sdk/index'
+import { useConfigHook } from '@/hooks/useConfigHook'
 import { storage, Config_Key } from '@/utils/storage'
 
-export function setupCdn(app) {
-  const configStore = useConfigStore()
-  const configure = storage.get(Config_Key)
-  if (configure) {
-    configStore.setConfig(configure)
+export function init() {
+  const { config, setConfig } = useConfigHook()
+  const localConfig = storage.get(Config_Key)
+  if (localConfig) {
+    setConfig(localConfig)
   }
-  const cdn = new Cdn({
-    token: configStore.config.token,
-  })
-  app.config.globalProperties.cdn = cdn
+  return createSdk(config)
 }

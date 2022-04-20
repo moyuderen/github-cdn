@@ -27,12 +27,17 @@ const sdk = createSdk(config)
 import sdk from './sdk'
 
 sdk.getFile()
-sdk.createFile(content)
+sdk.createFile(file)
 sdk.deleteFile(sha)
+
+// 存当前所在的目录 存在store中 默认为''
+// 
+sdk.getFile('test')
+sdk.createFile(file, 'test')
+sdk.deleteFile('xxxxx', 'test', 'logo.png')
 
 // 更新配置config
 sdk.updateConfig(conofig)
-
 
 ```
 
@@ -61,8 +66,32 @@ function file2Base64(file: File) {
   })
 }
 
+```
 
+```typescript
+// Jsdelivr 实现，基于github url
+const JsDelivrCdnPrefix = 'https://cdn.jsdelivr.net/gh'
+const GithubPrefix = 'https://github.com/'
 
+// https://github.com/moyuderen/octokit-cdn/blob/main/WechatIMG329.jpeg
+// https://cdn.jsdelivr.net/gh/moyuderen/octokit-cdn/WechatIMG329.jpeg
+
+class Jsdelivr { 
+  static transformGithubUrl2JsdelivrUrl(githubUrl) {
+     // repoInfo: moyuderen/octokit-cdn/blob/main/WechatIMG329.jpeg
+    const repoInfo = this.origin.split(GithubPrefix)[1]
+    // onwerRepo:  moyuderen/octokit-cdn
+    // branchPath: main/WechatIMG329.jpeg
+    const [onwerRepo, branchPath] = repoInfo.split('/blob/')
+    // branch: main
+    // paths: ['WechatIMG329.jpeg']
+    const [branch, ...paths] = other.split('/')
+    // path: WechatIMG329.jpeg
+    const path = paths.join('/')
+    // https://cdn.jsdelivr.net/gh/moyuderen/octokit-cdn/WechatIMG329.jpeg
+    return `${JsDelivrCdnPrefix}/${onwerRepo}/${path}`
+  }
+}
 ```
 
 
@@ -70,6 +99,7 @@ function file2Base64(file: File) {
 ```typescript
 // SDK实现
 import { warpFile } from './utils'
+import { Jsdelivr } from './jsdelivr'
 
 interface Config {
   token: '', // 用户输入
@@ -78,6 +108,10 @@ interface Config {
   path: '', // 默认是跟目录
   branch: '', // 默认是main 可用户输入
   message: '', // commit message 可用户输入？
+}
+
+interface Info {
+  
 }
 
 const defaultConfig = {
@@ -117,12 +151,36 @@ class Sdk {
 	private composePathToConfig(path) {
     return path ? Object.assign(this.config, { path }) : this.config
   }
+
+	private markdownUrl(name, url) {
+    return `[${name}](${url})`
+  }
+
+	private composeResult(info: Info) {
+    const jsdelivr_url = Jsdelivr.transformGithubUrl2JsdelivrUrl(info.html_url)
+    const jsdelivr_url_md = this.markdownUrl(info.name, jsdelivr_url)
+    const download_url_md = this.markdownUrl(info.name, download_url)
+    return {
+      ...info,
+      jsdelivr_url,
+      jsdelivr_url_md,
+      download_url_md,
+    }
+  }
 	
-  async getFile(path?: string) {
-    this.octokitWrap.getFile(this.composePathToConfig(path))
+  async getFile(path = '') {
+    try {
+       const { data = [] } = await this.octokitWrap.getFile(this.composePathToConfig(path))
+       const list = data.map((info: Info) => {
+         return composeResult(info)
+       })
+    } catch {
+      // 
+    }
+    
   }
   
-  async createFile(file, path?: string) {
+  async createFile(file, path = '') {
     const { pureBase64, name } = await warpFile(file)
 
     this.octokitWrap.createFile({

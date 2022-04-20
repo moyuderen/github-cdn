@@ -74,27 +74,27 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, getCurrentInstance } from 'vue'
+import { reactive } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Compass, DocumentCopy } from '@element-plus/icons-vue'
 import { copyText } from 'vue3-clipboard'
-import { isImageUrl } from '@/utils/file'
-import { useConfigStore } from '@/store/config'
-const { proxy } = getCurrentInstance()
+import { cdnSdk } from '@/main'
 
 const inputStyle = reactive({
   'width': '500px',
   'margin-right': '10px',
 })
+
 const props = defineProps({
   file: Object,
 })
+const emits = defineEmits(['getList', 'close'])
 
-const open = (url) => {
+function open(url) {
   window.open(url)
 }
 
-const copy = (content) => {
+function copy(content) {
   copyText(content, undefined, (error, event) => {
     if (error) {
       ElMessage.error('Can not copy')
@@ -104,23 +104,17 @@ const copy = (content) => {
   })
 }
 
-const configStore = useConfigStore()
-const del = (item) => {
-  const { path, sha } = props.file
-  ElMessageBox.confirm(
-    'proxy will permanently delete the file. Continue?',
-    'Warning',
-    {
-      confirmButtonText: 'OK',
-      cancelButtonText: 'Cancel',
-      type: 'warning',
-    },
-  ).then(async () => {
-    await proxy.$cdn.deleteFile({
-      ...configStore.config,
-      path,
-      sha,
-    })
+function del() {
+  const { path, sha, name } = props.file
+  ElMessageBox.confirm('Delete the file. Continue?', 'Warning', {
+    confirmButtonText: 'OK',
+    cancelButtonText: 'Cancel',
+    type: 'warning',
+  }).then(async () => {
+    await cdnSdk.deleteFile(sha, path, name)
+    emits('getList')
+    emits('close')
+
     ElMessage({
       type: 'success',
       message: 'Delete completed',

@@ -1,7 +1,11 @@
 <template>
   <div class="home">
     <el-drawer v-model="showFile" title="File Info" size="800px">
-      <File :file="fileInfo"></File>
+      <File
+        :file="fileInfo"
+        @getList="getList"
+        @close="showFile = false"
+      ></File>
     </el-drawer>
 
     <div class="detail">
@@ -26,7 +30,7 @@
       </el-upload>
     </div>
     <div>
-      <el-button type="primary" @click="refresh">Refresh</el-button>
+      <el-button type="primary" @click="getList">Refresh</el-button>
     </div>
     <Directory
       :list="reposList"
@@ -34,41 +38,34 @@
       @openFile="openFile"
       v-loading="loading"
       @getList="getList"
-      element-loading-text="获取目录中..."
+      element-loading-text="loading..."
     ></Directory>
   </div>
 </template>
 
 <script setup lang="ts">
 // libs
-import { ref, getCurrentInstance } from 'vue'
+import { ref } from 'vue'
 import { UploadFilled } from '@element-plus/icons-vue'
 import { ElNotification, ElMessage } from 'element-plus'
-// store
-import { storeToRefs } from 'pinia'
-import { useConfigStore } from '../../store/config'
+import { cdnSdk } from '@/main'
 import { useReposStore } from '@/store/repos'
-
 // hooks
-import { useGetRepos } from './useGetRepos'
-import { useCreateRepo } from './useCreateRepo'
+import { useGetFiles } from './hooks/useGetFiles'
 // components
 import Directory from './components/Directory.vue'
 import Config from './components/Config.vue'
-import File from '@/components/File.vue'
+import File from './components/File.vue'
 
-const { config } = storeToRefs(useConfigStore())
-const reposStore = useReposStore()
-
-const { proxy } = getCurrentInstance()
-const { loading, reposList, getRepos } = useGetRepos(proxy.$cdn, config.value)
+const { loading, reposList, getList } = useGetFiles()
 
 const checkExisting = (rawFile) => {
   return reposList.value.some((item) => {
     return rawFile.name === item.name
   })
 }
-const beforeUpload = async (rawFile) => {
+
+async function beforeUpload(rawFile) {
   if (checkExisting(rawFile)) {
     ElNotification({
       title: 'Error',
@@ -78,8 +75,8 @@ const beforeUpload = async (rawFile) => {
     return
   }
   try {
-    await useCreateRepo(proxy.$cdn, config.value, rawFile)
-    getList(reposStore.path)
+    await cdnSdk.createFile(rawFile, useReposStore().path)
+    getList()
     ElMessage({
       message: '上传成功 !',
       type: 'success',
@@ -95,23 +92,15 @@ const beforeUpload = async (rawFile) => {
   return false
 }
 
-const getList = (path) => {
-  getRepos(path)
-}
-
-const openDir = () => {
-  getList(reposStore.path)
-}
-
-const refresh = () => {
-  getList(reposStore.path)
-}
-
-const showFile = ref(false)
+let showFile = ref(false)
 let fileInfo = ref(null)
-const openFile = (file) => {
+function openFile(file) {
   showFile.value = true
   fileInfo.value = file
+}
+
+function openDir() {
+  getList()
 }
 </script>
 

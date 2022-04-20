@@ -1,24 +1,21 @@
 import { defineStore } from 'pinia'
-import type { CreateConfig } from '../core/octokit/create-file'
-
-interface State {
-  config: CreateConfig
+import { Config } from '@/cdn-sdk/cdn/index'
+interface ConfigState {
+  config: Config
 }
-
 export const useConfigStore = defineStore('config', {
-  state: (): State => {
+  state: (): ConfigState => {
     return {
       config: {
         token: '',
         owner: '',
         repo: '',
-        branch: '',
-        message: '',
+        branch: 'main',
       },
     }
   },
   actions: {
-    setConfig(config: CreateConfig) {
+    setConfig(config: Config) {
       this.config = Object.assign(this.config, config)
     },
   },

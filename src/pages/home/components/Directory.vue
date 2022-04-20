@@ -1,6 +1,5 @@
 <template>
   <div class="directory">
-    <el-divider></el-divider>
     <div class="breadcrumb">
       <el-breadcrumb :separator-icon="ArrowRight">
         <el-breadcrumb-item
@@ -45,8 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, unref, computed, PropType } from 'vue'
-import type { Ref } from 'vue'
+import { ref, computed, PropType } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   Folder,
@@ -56,30 +54,13 @@ import {
   ArrowRight,
 } from '@element-plus/icons-vue'
 import { isImageUrl } from '@/utils/file'
-import { useReposStore } from '@/store/repos'
+import { useSetPath } from '../hooks/useSetPath'
 
-const reposStore = useReposStore()
-enum DirectoryType {
-  File = 'file',
-  Dir = 'dir',
-}
-
-type Type<T> = T[keyof T]
-
-interface Directory {
-  download_url: string
-  git_url: string
-  name: string
-  path: string
-  sha: string
-  size: number
-  type: Type<DirectoryType>
-  url: string
-}
+import { GithubRepo, DirectoryType } from '@/cdn-sdk/types'
 
 const props = defineProps({
   list: {
-    type: Array as PropType<Directory[]>,
+    type: Array as PropType<GithubRepo[]>,
     default() {
       return []
     },
@@ -89,11 +70,10 @@ const props = defineProps({
 const emits = defineEmits(['openDir', 'openFile', 'getList'])
 
 const directoryType = DirectoryType
-
 const directoryList = computed(() => {
   let dirs = []
   let files = []
-  props.list.forEach((item: Directory) => {
+  props.list.forEach((item: GithubRepo) => {
     if (item.type === DirectoryType.File) {
       files.push(item)
     }
@@ -107,12 +87,10 @@ const directoryList = computed(() => {
 
 const directoryBreadcrumb = ref(['root'])
 let pathName = ref('')
+
 const openDir = (dir) => {
   directoryBreadcrumb.value.push(dir.name)
-  const [root, ...paths] = directoryBreadcrumb.value
-  pathName.value = paths.join('/')
-
-  reposStore.setPath(pathName.value)
+  useSetPath(directoryBreadcrumb.value)
   emits('openDir')
 }
 
@@ -124,22 +102,10 @@ const jumpDir = (dir, index) => {
   if (index === length - 1) {
     return
   }
-
   directoryBreadcrumb.value = directoryBreadcrumb.value.slice(0, index + 1)
-  const [root, ...paths] = directoryBreadcrumb.value
-  pathName.value = paths.join('/')
-  reposStore.setPath(pathName.value)
+  useSetPath(directoryBreadcrumb.value)
+
   emits('openDir')
-}
-
-enum CommandType {
-  Delete = 'delete',
-  Rename = 'rename',
-}
-
-interface Command {
-  type: CommandType[keyof CommandType]
-  detl: any
 }
 </script>
 
