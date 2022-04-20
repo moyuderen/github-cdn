@@ -1,4 +1,4 @@
-import Octokit from '../octokit'
+import Octokit from '.'
 interface Committer {
   /** 提交人 */
   name: string

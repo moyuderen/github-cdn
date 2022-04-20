@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { CreateConfig } from '../core/cdn/create-file'
+import type { CreateConfig } from '../core/octokit/create-file'
 
 interface State {
   config: CreateConfig

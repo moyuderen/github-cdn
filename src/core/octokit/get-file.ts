@@ -1,4 +1,4 @@
-import Octokit from '../octokit'
+import Octokit from '../cdn'
 export interface getReposConfig {
   /** github用户名称 */
   owner: string

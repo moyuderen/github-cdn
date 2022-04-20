@@ -1,4 +1,4 @@
-import { GithubRep } from '../interface'
+import { GithubRep } from '../types/interface'
 
 // https://github.com/ 被替换为 https://cdn.jsdelivr.net/gh/
 // moyuderen 保持不变

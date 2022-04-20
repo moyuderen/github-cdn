@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { Cdn } from '../../core/index'
-import type { CreateConfig } from '../../core/cdn/create-file'
+import type { CreateConfig } from '../../core/octokit/create-file'
 import { parseFile } from '../../utils/file'
 import { useReposStore } from '@/store/repos'
 const reposStore = useReposStore()

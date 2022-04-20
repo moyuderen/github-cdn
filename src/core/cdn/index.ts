@@ -1,7 +1,7 @@
-import Octokit, { getOctokitInstance } from '../octokit'
-import createFile, { CreateConfig } from './create-file'
-import deleteFile, { DreateConfig } from './delete-file'
-import getFile, { getReposConfig } from './get-file'
+import Octokit, { getOctokitInstance } from '../octokit/'
+import createFile, { CreateConfig } from '../octokit/create-file'
+import deleteFile, { DreateConfig } from '../octokit/delete-file'
+import getFile, { getReposConfig } from '../octokit/get-file'
 
 // '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'
 // ('moyuderen/octokit-cdn/contents/test1/test.jpg');

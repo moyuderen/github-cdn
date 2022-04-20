@@ -1,5 +1,5 @@
-import Octokit from './octokit'
-import { CallBack } from './cdn/interface'
+import Octokit from '.'
+import { CallBack } from '../cdn/interface'
 
 export function useOctokitHooks(octokit: Octokit, config: CallBack) {
   octokit.hook.before('request', async (options: any) => {

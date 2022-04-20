@@ -1,8 +1,8 @@
 import { ref } from 'vue'
 import { Cdn, JsDelivr } from '../../core/index'
-import { GithubRep } from '../../core/interface'
-import type { CreateConfig } from '../../core/cdn/create-file'
-import { isGithubFile } from '../../core/utils'
+import { GithubRep } from '../../core/types/interface'
+import type { CreateConfig } from '../../core/octokit/create-file'
+import { isGithubFile } from '../../core/shared/utils'
 import { useReposStore } from '@/store/repos'
 const reposStore = useReposStore()
 
