@@ -1,21 +1,18 @@
 <template>
-  <el-form :model="form" label-width="120px" :rules="rules" ref="ruleFormRef">
-    <el-form-item label="token" prop="token">
+  <el-form :model="form" label-width="140px" :rules="rules" ref="ruleFormRef">
+    <el-form-item label="Token" prop="token">
       <el-input v-model="form.token" />
     </el-form-item>
-    <el-form-item label="owner" prop="owner">
+    <el-form-item label="Owner" prop="owner">
       <el-input v-model="form.owner" />
     </el-form-item>
-    <el-form-item label="repo" prop="repo">
+    <el-form-item label="Repo" prop="repo">
       <el-input v-model="form.repo" />
     </el-form-item>
-    <el-form-item label="branch">
+    <el-form-item label="Branch">
       <el-input v-model="form.branch" placeholder="默认为main分支" />
     </el-form-item>
-    <el-form-item label="path">
-      <el-input v-model="form.path" placeholder="默认path为根路径" />
-    </el-form-item>
-    <el-form-item label="message">
+    <el-form-item label="Commit message">
       <el-input v-model="form.message" />
     </el-form-item>
     <el-form-item>
@@ -29,7 +26,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive, onBeforeMount } from 'vue'
-import useConfigStore from '../store/config'
+import { useConfigStore } from '../store/config'
 import { useMainStore } from '../store/main'
 import { storage, Config_Key } from '../utils/storage'
 import type { FormInstance } from 'element-plus'

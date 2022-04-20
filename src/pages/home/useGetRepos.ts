@@ -3,6 +3,8 @@ import { Cdn, JsDelivr } from '../../core/index'
 import { GithubRep } from '../../core/interface'
 import type { CreateConfig } from '../../core/cdn/create-file'
 import { isGithubFile } from '../../core/utils'
+import { useReposStore } from '@/store/repos'
+const reposStore = useReposStore()
 
 const jsDelivr = new JsDelivr()
 export function useGetRepos(sdk: Cdn, config: CreateConfig) {
@@ -16,7 +18,11 @@ export function useGetRepos(sdk: Cdn, config: CreateConfig) {
       reposList.value = (data || []).map((item: GithubRep) => {
         return isGithubFile(item.type)
           ? Object.assign(item, {
-              js_delivr_url: jsDelivr.transformToJsDelivr(item.html_url),
+              jsdelivr_url: jsDelivr.transformToJsDelivr(item.html_url),
+              jsdelivr_url_md: `[${item.name}](${jsDelivr.transformToJsDelivr(
+                item.html_url,
+              )})`,
+              download_url_md: `[${item.name}](${item.download_url})`,
             })
           : item
       })
@@ -27,7 +33,7 @@ export function useGetRepos(sdk: Cdn, config: CreateConfig) {
     }
   }
 
-  getRepos()
+  getRepos(reposStore.path)
 
   return {
     loading,

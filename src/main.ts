@@ -1,26 +1,23 @@
-import { createApp } from 'vue';
-import App from './App.vue';
-import router from './router/index';
-import useElementPlus from './plugins/element-plus';
-import { createPinia } from 'pinia';
-import useConfigStore from './store/config';
-import { storage, Config_Key } from './utils/storage';
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router/index'
+import useElementPlus from './plugins/element-plus'
+import { createPinia } from 'pinia'
+import { setupCdn } from './plugins/cdn'
+import { Cdn } from '@/core/index'
 
-const app = createApp(App);
-const pinia = createPinia();
-
-app.use(pinia);
-initConfig();
-useElementPlus(app);
-
-app.use(router);
-
-app.mount('#app');
-
-function initConfig() {
-  const config = useConfigStore();
-  const configure = storage.get(Config_Key);
-  if (configure) {
-    config.setConfig(configure);
+// 放到env.d.ts会导致vue导出模块出错
+declare module '@vue/runtime-core' {
+  export interface ComponentCustomProperties {
+    $cdn: Cdn
   }
 }
+
+const app = createApp(App)
+const pinia = createPinia()
+
+app.use(pinia)
+setupCdn(app)
+useElementPlus(app)
+app.use(router)
+app.mount('#app')

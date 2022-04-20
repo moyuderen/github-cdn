@@ -1,7 +1,7 @@
 interface Links {
-  git: string;
-  html: string;
-  self: string;
+  git: string
+  html: string
+  self: string
 }
 
 /**
@@ -17,16 +17,16 @@ interface Links {
  */
 
 export interface GithubRep {
-  download_url: string;
-  git_url: string;
-  html_url: string;
-  name: string;
-  path: string;
-  sha: string;
-  size: number;
-  type: 'file' | 'dir';
-  url: string;
-  __links: Links;
+  download_url: string
+  git_url: string
+  html_url: string
+  name: string
+  path: string
+  sha: string
+  size: number
+  type: 'file' | 'dir'
+  url: string
+  __links: Links
 }
 
 export enum DirectoryType {
@@ -34,4 +34,4 @@ export enum DirectoryType {
   Dir = 'dir',
 }
 
-export type DirectoryTypeValue<T> = T[keyof T];
+export type DirectoryTypeValue<T> = T[keyof T]

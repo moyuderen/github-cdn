@@ -1,4 +1,4 @@
-import JsDelivr from './jsdelivr';
-import Cdn from './cdn/index';
+import JsDelivr from './jsdelivr/jsdelivr'
+import Cdn from './cdn/index'
 
-export { JsDelivr, Cdn };
+export { JsDelivr, Cdn }

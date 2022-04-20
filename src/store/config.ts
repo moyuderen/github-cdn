@@ -5,7 +5,7 @@ interface State {
   config: CreateConfig
 }
 
-export default defineStore('config', {
+export const useConfigStore = defineStore('config', {
   state: (): State => {
     return {
       config: {
@@ -13,7 +13,6 @@ export default defineStore('config', {
         owner: '',
         repo: '',
         branch: '',
-        path: '',
         message: '',
       },
     }

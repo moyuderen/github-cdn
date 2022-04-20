@@ -13,22 +13,21 @@
         </el-icon>
       </div>
     </template>
-    <Config />
+    <slot></slot>
   </el-drawer>
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { CircleClose } from '@element-plus/icons-vue';
-import Config from './Config.vue';
-import { useMainStore } from '../store/main';
+import { storeToRefs } from 'pinia'
+import { CircleClose } from '@element-plus/icons-vue'
+import { useMainStore } from '../store/main'
 
-const mainStore = useMainStore();
-const { showDrawer } = storeToRefs(mainStore);
+const mainStore = useMainStore()
+const { showDrawer } = storeToRefs(mainStore)
 
 const close = () => {
-  mainStore.toggleDrawer();
-};
+  mainStore.toggleDrawer()
+}
 </script>
 
 <style lang="scss" scoped>

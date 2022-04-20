@@ -5,7 +5,7 @@ export interface getReposConfig {
   /** 仓库名称 */
   repo: string
   /** 分支名称 或者tag */
-  ref?: string
+  branch?: string
   /** 路径 */
   path?: string
 }
@@ -22,7 +22,7 @@ export default async function getFile(
   const owner = config.owner
   const repo = config.repo
   const path = defConfig.path + config.path
-  const ref = config.ref || defConfig.ref
+  const ref = config.branch || defConfig.ref
   const url = `GET /repos/${owner}/${repo}/contents${path}?ref=${ref}`
   return octokit.request(url, {
     owner: 'OWNER',

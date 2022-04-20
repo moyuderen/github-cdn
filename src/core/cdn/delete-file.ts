@@ -39,7 +39,6 @@ export const defConfig = {
 export default async function deleteFile(
   octokit: Octokit,
   config: DreateConfig,
-  content: string,
 ) {
   const owner = config.owner
   const repo = config.repo
@@ -57,7 +56,6 @@ export default async function deleteFile(
     branch,
     message,
     committer,
-    content,
     sha,
   })
 }

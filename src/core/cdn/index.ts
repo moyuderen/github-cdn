@@ -1,40 +1,40 @@
-import Octokit, { getOctokitInstance } from '../octokit';
-import createFile, { CreateConfig } from './create-file';
-import deleteFile, { DreateConfig } from './delete-file';
-import getFile, { getReposConfig } from './get-file';
+import Octokit, { getOctokitInstance } from '../octokit'
+import createFile, { CreateConfig } from './create-file'
+import deleteFile, { DreateConfig } from './delete-file'
+import getFile, { getReposConfig } from './get-file'
 
 // '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'
 // ('moyuderen/octokit-cdn/contents/test1/test.jpg');
 
 interface CdnConfig {
-  token: string;
+  token: string
 }
 
 export default class Cdn {
-  private octokit: Octokit;
-  private config: CdnConfig;
+  private octokit: Octokit
+  private config: CdnConfig
 
   constructor(config: CdnConfig) {
-    this.config = config;
+    this.config = config
     // init
     this.octokit = getOctokitInstance({
       auth: this.config.token,
-    });
+    })
   }
 
   public getConfig() {
-    return this.config;
+    return this.config
   }
 
-  public getFile(config: getReposConfig) {
-    return getFile(this.octokit, config);
+  public async getFile(config: getReposConfig) {
+    return getFile(this.octokit, config)
   }
 
   public async createFile(config: CreateConfig, content: string) {
-    return createFile(this.octokit, config, content);
+    return createFile(this.octokit, config, content)
   }
 
-  public async deleteFile(config: DreateConfig, content: string) {
-    return deleteFile(this.octokit, config, content);
+  public async deleteFile(config: DreateConfig) {
+    return deleteFile(this.octokit, config)
   }
 }

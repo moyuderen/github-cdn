@@ -1,9 +1,11 @@
 <template>
   <div class="directory">
+    <el-divider></el-divider>
     <div class="breadcrumb">
       <el-breadcrumb :separator-icon="ArrowRight">
         <el-breadcrumb-item
           v-for="(breadcrumb, index) in directoryBreadcrumb"
+          :key="breadcrumb"
           @click="jumpDir(breadcrumb, index)"
         >
           {{ breadcrumb }}
@@ -13,51 +15,20 @@
 
     <div class="file-box">
       <div v-for="item in directoryList" :key="item.name" class="file">
-        <el-dropdown
-          trigger="contextmenu"
-          placement="top-start"
-          @command="handleCommand"
-          :hide-on-click="false"
-        >
-          <span class="el-dropdown-link">
-            <div v-if="directoryType.Dir === item.type" @click="openDir(item)">
-              <img src="../../../assets/dir.png" alt="" />
-            </div>
-            <div v-if="directoryType.File === item.type">
-              <div v-if="isImageUrl(item.name)">
-                <el-image
-                  lazy
-                  style="width: 44px; height: 44px; border-radius: 4px"
-                  :src="item.download_url"
-                  fit="fill"
-                  :preview-src-list="[item.download_url]"
-                ></el-image>
-              </div>
-              <img v-else src="../../../assets/file.png" alt="" />
-            </div>
-          </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item
-                :command="{
-                  type: 'delete',
-                  detl: item,
-                }"
-              >
-                删除
-              </el-dropdown-item>
-              <el-dropdown-item
-                :command="{
-                  type: 'rename',
-                  detl: item,
-                }"
-              >
-                重命名（todo）
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-
+        <div v-if="directoryType.Dir === item.type" @click="openDir(item)">
+          <img src="../../../assets/dir.png" alt="" />
+        </div>
+        <div v-if="directoryType.File === item.type">
+          <div v-if="isImageUrl(item.name)" @click="openFile(item)">
+            <el-image
+              lazy
+              style="width: 44px; height: 44px; border-radius: 4px"
+              :src="item.download_url"
+              fit="fill"
+            ></el-image>
+          </div>
+          <img v-else src="../../../assets/file.png" @click="openFile(item)" />
+        </div>
         <el-tooltip
           class="box-item"
           effect="dark"
@@ -84,11 +55,10 @@ import {
   Delete,
   ArrowRight,
 } from '@element-plus/icons-vue'
-import { isImageUrl } from '../../../utils/file'
-import useConfigStore from '../../../store/config'
-import { storeToRefs } from 'pinia'
-const { config } = storeToRefs(useConfigStore())
+import { isImageUrl } from '@/utils/file'
+import { useReposStore } from '@/store/repos'
 
+const reposStore = useReposStore()
 enum DirectoryType {
   File = 'file',
   Dir = 'dir',
@@ -114,17 +84,9 @@ const props = defineProps({
       return []
     },
   },
-  cdn: {
-    type: Object,
-    default: null,
-  },
-  config: {
-    type: Object,
-    default: null,
-  },
 })
 
-const emits = defineEmits(['openDir', 'getList'])
+const emits = defineEmits(['openDir', 'openFile', 'getList'])
 
 const directoryType = DirectoryType
 
@@ -150,9 +112,13 @@ const openDir = (dir) => {
   const [root, ...paths] = directoryBreadcrumb.value
   pathName.value = paths.join('/')
 
-  emits('openDir', pathName.value)
+  reposStore.setPath(pathName.value)
+  emits('openDir')
 }
 
+const openFile = (file) => {
+  emits('openFile', file)
+}
 const jumpDir = (dir, index) => {
   const length = directoryBreadcrumb.value.length
   if (index === length - 1) {
@@ -162,7 +128,8 @@ const jumpDir = (dir, index) => {
   directoryBreadcrumb.value = directoryBreadcrumb.value.slice(0, index + 1)
   const [root, ...paths] = directoryBreadcrumb.value
   pathName.value = paths.join('/')
-  emits('openDir', pathName.value)
+  reposStore.setPath(pathName.value)
+  emits('openDir')
 }
 
 enum CommandType {
@@ -173,33 +140,6 @@ enum CommandType {
 interface Command {
   type: CommandType[keyof CommandType]
   detl: any
-}
-
-const handleCommand = (command: Ref<Command>) => {
-  const commandInfo = unref(command)
-  if (commandInfo.type === CommandType.Delete) {
-    const { path, sha } = commandInfo.detl
-    ElMessageBox.confirm(
-      'proxy will permanently delete the file. Continue?',
-      'Warning',
-      {
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Cancel',
-        type: 'warning',
-      },
-    ).then(async () => {
-      await props.cdn.deleteFile({
-        ...props.config,
-        path,
-        sha,
-      })
-      emits('getList')
-      ElMessage({
-        type: 'success',
-        message: 'Delete completed',
-      })
-    })
-  }
 }
 </script>
 
@@ -221,12 +161,13 @@ const handleCommand = (command: Ref<Command>) => {
 .file-box {
   display: flex;
   flex-wrap: wrap;
+  margin-top: 30px;
 }
 .file {
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
+  // cursor: pointer; 会导致事件慢
   margin-bottom: 30px;
   margin-right: 10px;
 
