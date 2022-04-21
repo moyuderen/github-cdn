@@ -49,6 +49,7 @@ export class Sdk {
       console.warn('请先实例化')
     }
     this.config = Object.assign(defaultConfig, config)
+    this.octokitWrap = new OctokitWrap(this.config.token)
     console.log('更新配置成功！')
   }
 
@@ -88,14 +89,27 @@ export class Sdk {
     }
   }
 
-  async createFile(file, path = '') {
+  async createFile(file, path = '', newname = '') {
     const { pureBase64, name } = await warpFile(file)
-    path = path ? path + '/' + name : name
+    if (!newname) {
+      newname = name
+    }
+    path = path ? path + '/' + newname : newname
     return this.octokitWrap.createFile({
       ...this.config,
       content: pureBase64,
       path,
       message: `upload: 上传${name}文件`,
+    })
+  }
+
+  createDir(path = '', dirname = '') {
+    path = path ? `${path}/${dirname}/.gitkeep` : `${dirname}/.gitkeep`
+    return this.octokitWrap.createFile({
+      ...this.config,
+      path,
+      content: 'LmdpdGtlZXA=',
+      message: `feat: 新建目录${dirname}`,
     })
   }
 

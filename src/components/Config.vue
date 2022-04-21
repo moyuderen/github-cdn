@@ -28,13 +28,14 @@ import { useMainStore } from '../store/main'
 import { storage, Config_Key } from '../utils/storage'
 import type { FormInstance } from 'element-plus'
 import { cdnSdk } from '@/main'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const configStore = useConfigStore()
 const mainStore = useMainStore()
 
 const ruleFormRef = ref<FormInstance>()
 const form = configStore.config
-console.log(form)
 
 const rules = reactive({
   token: [{ required: true, trigger: 'blur' }],
@@ -50,6 +51,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       configStore.setConfig(form)
       cdnSdk.updateConfig(form)
       mainStore.toggleDrawer()
+
+      router.replace({
+        name: 'Home',
+      })
     }
   })
 }

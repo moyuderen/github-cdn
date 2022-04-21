@@ -13,7 +13,7 @@
       <el-upload
         drag
         action="#"
-        multiple
+        :multiple="false"
         :before-upload="beforeUpload"
         :show-file-list="false"
       >
@@ -31,7 +31,10 @@
     </div>
     <div>
       <el-button type="primary" @click="getList">Refresh</el-button>
+      <el-button type="primary" @click="openCreateDir">Create dir</el-button>
     </div>
+    <CreateDir ref="createDirComp" @getList="getList" />
+    <Rename ref="renameComp" @rename="createFile"></Rename>
     <Directory
       :list="reposList"
       @openDir="openDir"
@@ -56,6 +59,8 @@ import { useGetFiles } from './hooks/useGetFiles'
 import Directory from './components/Directory.vue'
 import Config from './components/Config.vue'
 import File from './components/File.vue'
+import CreateDir from './components/CreateDir.vue'
+import Rename from './components/Rename.vue'
 
 const { loading, reposList, getList } = useGetFiles()
 
@@ -65,6 +70,8 @@ const checkExisting = (rawFile) => {
   })
 }
 
+let currentFile
+const renameComp = ref(null)
 async function beforeUpload(rawFile) {
   if (checkExisting(rawFile)) {
     ElNotification({
@@ -74,8 +81,14 @@ async function beforeUpload(rawFile) {
     })
     return
   }
+  currentFile = rawFile
+  renameComp.value.toggle(rawFile.name)
+  return false
+}
+
+async function createFile(name) {
   try {
-    await cdnSdk.createFile(rawFile, useReposStore().path)
+    await cdnSdk.createFile(currentFile, useReposStore().path, name)
     getList()
     ElMessage({
       message: '上传成功 !',
@@ -88,8 +101,6 @@ async function beforeUpload(rawFile) {
       type: 'error',
     })
   }
-
-  return false
 }
 
 let showFile = ref(false)
@@ -101,6 +112,11 @@ function openFile(file) {
 
 function openDir() {
   getList()
+}
+
+const createDirComp = ref(null)
+function openCreateDir() {
+  createDirComp.value.toggle()
 }
 </script>
 

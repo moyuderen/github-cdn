@@ -35,6 +35,17 @@
         <document-copy />
       </el-icon>
     </el-form-item>
+    <el-form-item
+      label="Github CDN image"
+      v-if="isImageUrl(props.file.download_url)"
+    >
+      <el-image
+        style="width: 500px; height: 250px"
+        :src="props.file.download_url"
+        fit="cover"
+        :preview-src-list="[props.file.download_url]"
+      />
+    </el-form-item>
     <el-form-item label="Github CDN markdown">
       <el-input
         :value="props.file.download_url_md"
@@ -56,6 +67,17 @@
         <document-copy />
       </el-icon>
     </el-form-item>
+    <el-form-item
+      label="Jsdelivr CDN image"
+      v-if="isImageUrl(props.file.jsdelivr_url)"
+    >
+      <el-image
+        style="width: 500px; height: 250px"
+        :src="props.file.jsdelivr_url"
+        fit="cover"
+        :preview-src-list="[props.file.jsdelivr_url]"
+      />
+    </el-form-item>
     <el-form-item label="Jsdelivr CDN markdown">
       <el-input
         :value="props.file.jsdelivr_url_md"
@@ -75,10 +97,11 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox, ElImage } from 'element-plus'
 import { Compass, DocumentCopy } from '@element-plus/icons-vue'
 import { copyText } from 'vue3-clipboard'
 import { cdnSdk } from '@/main'
+import { isImageUrl } from '@/utils/file'
 
 const inputStyle = reactive({
   'width': '500px',

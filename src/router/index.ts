@@ -1,19 +1,31 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import homeRoutes from './home.route'
+import { storage, Config_Key } from '@/utils/storage'
 
-const routes = [...homeRoutes()]
+import homeRoutes from './home.route'
+import loginRoutes from './login.route'
+
+const routes = [...loginRoutes(), ...homeRoutes()]
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
 })
 
+const hasToken = () => {
+  const config = storage.get(Config_Key)
+  return !!config.token
+}
+
 // 全局路由守卫
 router.beforeEach((to, from, next) => {
-  // console.log(to, from)
   if (to.meta.title) {
     document.title = `${to.meta.title} | octokit`
   }
-  next()
+  console.log(storage.get(Config_Key))
+  if (to.name !== 'Login' && !hasToken()) {
+    next({ name: 'Login' })
+  } else {
+    next()
+  }
 })
 
 router.afterEach((to, from) => {
