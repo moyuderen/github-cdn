@@ -1,5 +1,5 @@
 // SDK实现
-import { warpFile } from '../shared/index'
+import { warpFile, isImageUrl } from '../shared/index'
 import { Jsdelivr } from '../jsdelivr/index'
 import { OctokitWrap } from '../octokit/index'
 import { GithubRepo, DirectoryType } from '../types/index'
@@ -66,8 +66,15 @@ export class Sdk {
       return repo
     }
     const jsdelivr_url = Jsdelivr.transformGithubUrl2JsdelivrUrl(repo.html_url)
-    const jsdelivr_url_md = this.markdownUrl(repo.name, jsdelivr_url)
-    const download_url_md = this.markdownUrl(repo.name, repo.download_url)
+
+    let imageSign = '!'
+    let downloadUrl = repo.download_url
+    if (!isImageUrl(repo.html_url)) {
+      imageSign = ''
+    }
+    const jsdelivr_url_md =
+      imageSign + this.markdownUrl(repo.name, jsdelivr_url)
+    const download_url_md = imageSign + this.markdownUrl(repo.name, downloadUrl)
     return {
       ...repo,
       jsdelivr_url,
